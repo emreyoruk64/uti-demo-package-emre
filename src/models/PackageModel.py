@@ -111,6 +111,34 @@ class KeepSideBBox(Config):
     class Config:
         title = "Keep Sides"
 
+class StrengthLevelLow(Config):
+    name: Literal["False"] = "False"
+    value: Literal[False] = False
+    type: Literal["bool"] = "bool"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "Low"
+
+class StrengthLevelHigh(Config):
+    name: Literal["True"] = "True"
+    value: Literal[True] = True
+    type: Literal["bool"] = "bool"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "High"
+
+class StrengthLevel(Config):
+    name: Literal["StrengthLevel"] = "StrengthLevel"
+    value: Union[StrengthLevelLow, StrengthLevelHigh]
+    type: Literal["object"] = "object"
+    field: Literal["dependentDropdownlist"] = "dependentDropdownlist"
+
+    class Config:
+        title = "Strength Level"
+
+
 
 class Degree(Config):
     """
@@ -133,6 +161,87 @@ class AlphaValue(Config):
     class Config:
         title = "Alpha Value"
 
+class AlphaConfigs(Configs):
+    alphaValue: AlphaValue
+
+class PresetConfigs(Configs):
+    strengthLevel: StrengthLevel
+
+
+class AlphaExecutorOutputs(Outputs):
+    outputImage: OutputImage
+
+class AlphaExecutorInputs(Inputs):
+    inputImage: InputImage
+
+
+class PresetExecutorInputs(Inputs):
+    inputImage: InputImage
+
+class PresetExecutorOutputs(Outputs):
+    outputImage: OutputImage
+
+class AlphaExecutorResponse(Response):
+    outputs: AlphaExecutorOutputs
+
+class PresetExecutorResponse(Response):
+    outputs: PresetExecutorOutputs
+
+class AlphaExecutorRequest(Request):
+    inputs: Optional[AlphaExecutorInputs]
+    configs: AlphaConfigs
+
+    class Config:
+        json_schema_extra = {
+            "target": "configs"
+        }
+
+class PresetExecutorRequest(Request):
+    inputs: Optional[PresetExecutorInputs]
+    configs: PresetConfigs
+
+    class Config:
+        json_schema_extra = {
+            "target": "configs"
+        }
+
+class AlphaExecutor(Config):
+    name: Literal["AlphaExecutor"] = "AlphaExecutor"
+    value: Union[AlphaExecutorRequest, AlphaExecutorResponse]
+    type: Literal["object"] = "object"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "Manual Alpha"
+        json_schema_extra = {
+            "target": {
+                "value": 0
+            }
+        }
+
+class PresetExecutor(Config):
+    name: Literal["PresetExecutor"] = "PresetExecutor"
+    value: Union[PresetExecutorRequest, PresetExecutorResponse]
+    type: Literal["object"] = "object"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "Use Preset"
+        json_schema_extra = {
+            "target": {
+                "value": 0
+            }
+        }
+
+class ConfigExecutor1(Config):
+    name: Literal["ConfigExecutor1"] = "ConfigExecutor1"
+    value: Union[AlphaExecutor, PresetExecutor]
+    type: Literal["executor"] = "executor"
+    field: Literal["dependentDropdownlist"] = "dependentDropdownlist"
+
+    class Config:
+        title = "Mixing Mode"
+
 class PackageExecutor1Inputs(Inputs):
     inputImage: InputImage
 
@@ -141,17 +250,19 @@ class PackageExecutor1Configs(Configs):
     degree: Degree
     drawBBox: KeepSideBBox
 
+
 class PackageExecutor2Inputs(Inputs):
     inputImage: InputImage
     inputImage: InputImage
 
 
 class PackageExecutor2Configs(Configs):
-    alphaValue: AlphaValue
+    configExecutor1: ConfigExecutor1
 
 
 class PackageExecutor1Outputs(Outputs):
     outputImage: OutputImage
+
 
 class PackageExecutor2Outputs(Outputs):
     outputImage: OutputImage
@@ -165,6 +276,7 @@ class PackageExecutor1Request(Request):
         json_schema_extra = {
             "target": "configs"
         }
+
 
 class PackageExecutor2Request(Request):
     inputs: Optional[PackageExecutor2Inputs]
@@ -180,6 +292,7 @@ class PackageExecutor1Response(Response):
 
 class PackageExecutor2Response(Response):
     outputs: PackageExecutor2Outputs
+
 
 class PackageExecutor2(Config):
     name: Literal["PackageExecutor2"] = "PackageExecutor2"
@@ -208,6 +321,7 @@ class PackageExecutor1(Config):
                 "value": 0
             }
         }
+
 
 
 class ConfigExecutor(Config):
