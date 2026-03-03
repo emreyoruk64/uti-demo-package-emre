@@ -20,37 +20,6 @@ class InputImage(Input):
     class Config:
         title = "Image"
 
-class InputDetection(Input):
-    name: Literal["inputDetection"] = "inputDetection"
-    value: Union[List[Detection], Detection]
-    type: str = "object"
-
-    @validator("type", pre=True, always=True)
-    def set_type_based_on_value(cls, value, values):
-        value = values.get('value')
-        if isinstance(value, Image):
-            return "object"
-        elif isinstance(value, list):
-            return "list"
-
-    class Config:
-        title = "Detection"
-
-class OutputDetection(Input):
-    name: Literal["outputDetection"] = "outputDetection"
-    value: Union[List[Detection], Detection]
-    type: str = "object"
-
-    @validator("type", pre=True, always=True)
-    def set_type_based_on_value(cls, value, values):
-        value = values.get('value')
-        if isinstance(value, Image):
-            return "object"
-        elif isinstance(value, list):
-            return "list"
-
-    class Config:
-        title = "Detection"
 
 class OutputImage(Output):
     name: Literal["outputImage"] = "outputImage"
@@ -155,6 +124,14 @@ class Degree(Config):
     class Config:
         title = "Angle"
 
+class AlphaValue(Config):
+    name: Literal["AlphaValue"] = "AlphaValue"
+    value: int = Field(ge=0.0, le=1.0,default=0.5)
+    type: Literal["number"] = "number"
+    field: Literal["textInput"] = "textInput"
+
+    class Config:
+        title = "Alpha Value"
 
 class PackageExecutor1Inputs(Inputs):
     inputImage: InputImage
@@ -166,12 +143,11 @@ class PackageExecutor1Configs(Configs):
 
 class PackageExecutor2Inputs(Inputs):
     inputImage: InputImage
-    inputDetection: InputDetection
+    inputImage: InputImage
 
 
 class PackageExecutor2Configs(Configs):
-    degree: Degree
-    drawBBox: KeepSideBBox
+    alphaValue: AlphaValue
 
 
 class PackageExecutor1Outputs(Outputs):
@@ -179,7 +155,7 @@ class PackageExecutor1Outputs(Outputs):
 
 class PackageExecutor2Outputs(Outputs):
     outputImage: OutputImage
-    outputDetection: OutputDetection
+    outputImage: OutputImage
 
 class PackageExecutor1Request(Request):
     inputs: Optional[PackageExecutor1Inputs]
@@ -212,7 +188,7 @@ class PackageExecutor2(Config):
     field: Literal["option"] = "option"
 
     class Config:
-        title = "Package"
+        title = "Image Mixer"
         json_schema_extra = {
             "target": {
                 "value": 0
@@ -226,7 +202,7 @@ class PackageExecutor1(Config):
     field: Literal["option"] = "option"
 
     class Config:
-        title = "Package"
+        title = "Gray Example"
         json_schema_extra = {
             "target": {
                 "value": 0
@@ -241,7 +217,7 @@ class ConfigExecutor(Config):
     field: Literal["dependentDropdownlist"] = "dependentDropdownlist"
 
     class Config:
-        title = "Task"
+        title = "Select Task"
 
 
 class PackageConfigs(Configs):
