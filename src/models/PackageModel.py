@@ -161,31 +161,51 @@ class AlphaValue(Config):
     class Config:
         title = "Alpha Value"
 
+
+class PackageExecutor1Inputs(Inputs):
+    inputImage: InputImage
+
+
+class PackageExecutor1Configs(Configs):
+    degree: Degree
+    drawBBox: KeepSideBBox
+
 class AlphaConfigs(Configs):
     alphaValue: AlphaValue
 
 class PresetConfigs(Configs):
     strengthLevel: StrengthLevel
 
+class PackageExecutor2Inputs(Inputs):
+    inputImage: InputImage
+    inputImage: InputImage
+
+
+class PackageExecutor2Configs(Configs):
+    configExecutor1: ConfigExecutor1
+
+
+class PackageExecutor1Outputs(Outputs):
+    outputImage: OutputImage
 
 class AlphaExecutorOutputs(Outputs):
     outputImage: OutputImage
 
-class AlphaExecutorInputs(Inputs):
-    inputImage: InputImage
-
-
-class PresetExecutorInputs(Inputs):
-    inputImage: InputImage
-
 class PresetExecutorOutputs(Outputs):
     outputImage: OutputImage
 
-class AlphaExecutorResponse(Response):
-    outputs: AlphaExecutorOutputs
+class PackageExecutor2Outputs(Outputs):
+    outputImage: OutputImage
+    outputImage: OutputImage
 
-class PresetExecutorResponse(Response):
-    outputs: PresetExecutorOutputs
+class PackageExecutor1Request(Request):
+    inputs: Optional[PackageExecutor1Inputs]
+    configs: PackageExecutor1Configs
+
+    class Config:
+        json_schema_extra = {
+            "target": "configs"
+        }
 
 class AlphaExecutorRequest(Request):
     inputs: Optional[AlphaExecutorInputs]
@@ -203,6 +223,55 @@ class PresetExecutorRequest(Request):
     class Config:
         json_schema_extra = {
             "target": "configs"
+        }
+
+class PackageExecutor2Request(Request):
+    inputs: Optional[PackageExecutor2Inputs]
+    configs: PackageExecutor2Configs
+
+    class Config:
+        json_schema_extra = {
+            "target": "configs"
+        }
+
+class PackageExecutor1Response(Response):
+    outputs: PackageExecutor1Outputs
+
+class PackageExecutor2Response(Response):
+    outputs: PackageExecutor2Outputs
+
+class AlphaExecutorResponse(Response):
+    outputs: AlphaExecutorOutputs
+
+class PresetExecutorResponse(Response):
+    outputs: PresetExecutorOutputs
+
+class PackageExecutor2(Config):
+    name: Literal["PackageExecutor2"] = "PackageExecutor2"
+    value: Union[PackageExecutor2Request, PackageExecutor2Response]
+    type: Literal["object"] = "object"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "Image Mixer"
+        json_schema_extra = {
+            "target": {
+                "value": 0
+            }
+        }
+
+class PackageExecutor1(Config):
+    name: Literal["PackageExecutor1"] = "PackageExecutor1"
+    value: Union[PackageExecutor1Request, PackageExecutor1Response]
+    type: Literal["object"] = "object"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "Gray Example"
+        json_schema_extra = {
+            "target": {
+                "value": 0
+            }
         }
 
 class AlphaExecutor(Config):
@@ -233,97 +302,6 @@ class PresetExecutor(Config):
             }
         }
 
-class ConfigExecutor1(Config):
-    name: Literal["ConfigExecutor1"] = "ConfigExecutor1"
-    value: Union[AlphaExecutor, PresetExecutor]
-    type: Literal["executor"] = "executor"
-    field: Literal["dependentDropdownlist"] = "dependentDropdownlist"
-
-    class Config:
-        title = "Mixing Mode"
-
-class PackageExecutor1Inputs(Inputs):
-    inputImage: InputImage
-
-
-class PackageExecutor1Configs(Configs):
-    degree: Degree
-    drawBBox: KeepSideBBox
-
-
-class PackageExecutor2Inputs(Inputs):
-    inputImage: InputImage
-    inputImage: InputImage
-
-
-class PackageExecutor2Configs(Configs):
-    configExecutor1: ConfigExecutor1
-
-
-class PackageExecutor1Outputs(Outputs):
-    outputImage: OutputImage
-
-
-class PackageExecutor2Outputs(Outputs):
-    outputImage: OutputImage
-    outputImage: OutputImage
-
-class PackageExecutor1Request(Request):
-    inputs: Optional[PackageExecutor1Inputs]
-    configs: PackageExecutor1Configs
-
-    class Config:
-        json_schema_extra = {
-            "target": "configs"
-        }
-
-
-class PackageExecutor2Request(Request):
-    inputs: Optional[PackageExecutor2Inputs]
-    configs: PackageExecutor2Configs
-
-    class Config:
-        json_schema_extra = {
-            "target": "configs"
-        }
-
-class PackageExecutor1Response(Response):
-    outputs: PackageExecutor1Outputs
-
-class PackageExecutor2Response(Response):
-    outputs: PackageExecutor2Outputs
-
-
-class PackageExecutor2(Config):
-    name: Literal["PackageExecutor2"] = "PackageExecutor2"
-    value: Union[PackageExecutor2Request, PackageExecutor2Response]
-    type: Literal["object"] = "object"
-    field: Literal["option"] = "option"
-
-    class Config:
-        title = "Image Mixer"
-        json_schema_extra = {
-            "target": {
-                "value": 0
-            }
-        }
-
-class PackageExecutor1(Config):
-    name: Literal["PackageExecutor1"] = "PackageExecutor1"
-    value: Union[PackageExecutor1Request, PackageExecutor1Response]
-    type: Literal["object"] = "object"
-    field: Literal["option"] = "option"
-
-    class Config:
-        title = "Gray Example"
-        json_schema_extra = {
-            "target": {
-                "value": 0
-            }
-        }
-
-
-
 class ConfigExecutor(Config):
     name: Literal["ConfigExecutor"] = "ConfigExecutor"
     value: Union[PackageExecutor1, PackageExecutor2]
@@ -332,6 +310,16 @@ class ConfigExecutor(Config):
 
     class Config:
         title = "Select Task"
+
+
+class ConfigExecutor1(Config):
+    name: Literal["ConfigExecutor1"] = "ConfigExecutor1"
+    value: Union[AlphaExecutor, PresetExecutor]
+    type: Literal["executor"] = "executor"
+    field: Literal["dependentDropdownlist"] = "dependentDropdownlist"
+
+    class Config:
+        title = "Mixing Mode"
 
 
 class PackageConfigs(Configs):
