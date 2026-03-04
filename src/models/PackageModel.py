@@ -1,7 +1,7 @@
 
 from pydantic import Field, validator
 from typing import List, Optional, Union, Literal
-from sdks.novavision.src.base.model import Package, Image, Detection, Inputs, Configs, Outputs, Response, Request, Output, Input, Config
+from sdks.novavision.src.base.model import Package, Image, Detection, Inputs, Configs, Outputs, Response, Request, Output, Input, Config, KeyPoints
 
 
 class InputImage(Input):
@@ -36,6 +36,27 @@ class OutputImage(Output):
 
     class Config:
         title = "Image"
+
+class Detections(Detection):
+    keyPoints: Optional[List[KeyPoints]] = None
+    imgUID: str
+
+
+class OutputDetections(Output):
+    name: Literal["outputDetections"] = "outputDetections"
+    value: List[Detections]
+    type: Literal["list"] = "list"
+
+    class Config:
+        title = "Output Detections"
+
+class InputDetection(Output):
+    name: Literal["inputDetection"] = "inputDetection"
+    value: List[Detections]
+    type: Literal["list"] = "list"
+
+    class Config:
+        title = "Input Detections"
 
 
 class KeepSideFalse(Config):
@@ -194,29 +215,23 @@ class MixingMode(Config):
 class PackageExecutor1Inputs(Inputs):
     inputImage: InputImage
 
-
 class PackageExecutor1Configs(Configs):
     degree: Degree
     drawBBox: KeepSideBBox
 
-
 class PackageExecutor2Inputs(Inputs):
     inputImage: InputImage
-    inputImage: InputImage
-
+    inputDetection: InputDetection
 
 class PackageExecutor2Configs(Configs):
     mixingMode: MixingMode
-    alphaValue: AlphaValue
-    strengthLevel: StrengthLevel
-
 
 class PackageExecutor1Outputs(Outputs):
     outputImage: OutputImage
 
 class PackageExecutor2Outputs(Outputs):
     outputImage: OutputImage
-    outputImage: OutputImage
+    outputDetections: OutputDetections
 
 class PackageExecutor1Request(Request):
     inputs: Optional[PackageExecutor1Inputs]
