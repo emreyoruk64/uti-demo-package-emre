@@ -133,11 +133,11 @@ class StrengthLevel(Config):
     name: Literal["StrengthLevel"] = "StrengthLevel"
     value: Union[StrengthLevelLow, StrengthLevelHigh]
     type: Literal["object"] = "object"
-    field: Literal["dependentDropdownlist"] = "dependentDropdownlist"
+    field: Literal["dropdownlist"] = "dropdownlist"
+    restart: Literal["True"] = "True"
 
     class Config:
         title = "Strength Level"
-
 
 
 class Degree(Config):
@@ -161,6 +161,35 @@ class AlphaValue(Config):
     class Config:
         title = "Alpha Value"
 
+class ManuelAlpha(Config):
+    name: Literal["ManuelAlpha"] = "ManuelAlpha"
+    alphaValue: AlphaValue
+    value: Literal["ManuelAlpha"]
+    type: Literal["string"] = "string"
+    field: Literal["option"] = "option"
+
+    class config:
+        title = "Manuel Alpha"
+
+class UsePreset(Config):
+    name: Literal["UsePreset"] = "UsePreset"
+    strengthLevel: StrengthLevel
+    value: Literal["UsePreset"]
+    type: Literal["string"] = "string"
+    field: Literal["option"] = "option"
+
+    class config:
+        title = "Use Preset"
+
+class MixingMode(Config):
+    name: Literal["MixingMode"] = "MixingMode"
+    value: Union[ManuelAlpha, UsePreset]
+    type: Literal["object"] = "object"
+    field: Literal["dependentDropdownlist"] = "dependentDropdownlist"
+    restart: Literal["True"] = "True"
+    class Config:
+        title = "Mixing Mode"
+
 
 class PackageExecutor1Inputs(Inputs):
     inputImage: InputImage
@@ -170,11 +199,6 @@ class PackageExecutor1Configs(Configs):
     degree: Degree
     drawBBox: KeepSideBBox
 
-class AlphaConfigs(Configs):
-    alphaValue: AlphaValue
-
-class PresetConfigs(Configs):
-    strengthLevel: StrengthLevel
 
 class PackageExecutor2Inputs(Inputs):
     inputImage: InputImage
@@ -182,16 +206,12 @@ class PackageExecutor2Inputs(Inputs):
 
 
 class PackageExecutor2Configs(Configs):
-    configExecutor1: ConfigExecutor1
+    mixingMode: MixingMode
+    alphaValue: AlphaValue
+    strengthLevel: StrengthLevel
 
 
 class PackageExecutor1Outputs(Outputs):
-    outputImage: OutputImage
-
-class AlphaExecutorOutputs(Outputs):
-    outputImage: OutputImage
-
-class PresetExecutorOutputs(Outputs):
     outputImage: OutputImage
 
 class PackageExecutor2Outputs(Outputs):
@@ -207,23 +227,6 @@ class PackageExecutor1Request(Request):
             "target": "configs"
         }
 
-class AlphaExecutorRequest(Request):
-    inputs: Optional[AlphaExecutorInputs]
-    configs: AlphaConfigs
-
-    class Config:
-        json_schema_extra = {
-            "target": "configs"
-        }
-
-class PresetExecutorRequest(Request):
-    inputs: Optional[PresetExecutorInputs]
-    configs: PresetConfigs
-
-    class Config:
-        json_schema_extra = {
-            "target": "configs"
-        }
 
 class PackageExecutor2Request(Request):
     inputs: Optional[PackageExecutor2Inputs]
@@ -240,11 +243,6 @@ class PackageExecutor1Response(Response):
 class PackageExecutor2Response(Response):
     outputs: PackageExecutor2Outputs
 
-class AlphaExecutorResponse(Response):
-    outputs: AlphaExecutorOutputs
-
-class PresetExecutorResponse(Response):
-    outputs: PresetExecutorOutputs
 
 class PackageExecutor2(Config):
     name: Literal["PackageExecutor2"] = "PackageExecutor2"
@@ -274,33 +272,7 @@ class PackageExecutor1(Config):
             }
         }
 
-class AlphaExecutor(Config):
-    name: Literal["AlphaExecutor"] = "AlphaExecutor"
-    value: Union[AlphaExecutorRequest, AlphaExecutorResponse]
-    type: Literal["object"] = "object"
-    field: Literal["option"] = "option"
 
-    class Config:
-        title = "Manual Alpha"
-        json_schema_extra = {
-            "target": {
-                "value": 0
-            }
-        }
-
-class PresetExecutor(Config):
-    name: Literal["PresetExecutor"] = "PresetExecutor"
-    value: Union[PresetExecutorRequest, PresetExecutorResponse]
-    type: Literal["object"] = "object"
-    field: Literal["option"] = "option"
-
-    class Config:
-        title = "Use Preset"
-        json_schema_extra = {
-            "target": {
-                "value": 0
-            }
-        }
 
 class ConfigExecutor(Config):
     name: Literal["ConfigExecutor"] = "ConfigExecutor"
@@ -310,16 +282,6 @@ class ConfigExecutor(Config):
 
     class Config:
         title = "Select Task"
-
-
-class ConfigExecutor1(Config):
-    name: Literal["ConfigExecutor1"] = "ConfigExecutor1"
-    value: Union[AlphaExecutor, PresetExecutor]
-    type: Literal["executor"] = "executor"
-    field: Literal["dependentDropdownlist"] = "dependentDropdownlist"
-
-    class Config:
-        title = "Mixing Mode"
 
 
 class PackageConfigs(Configs):
