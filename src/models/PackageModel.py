@@ -175,7 +175,7 @@ class Degree(Config):
 
 class AlphaValue(Config):
     name: Literal["AlphaValue"] = "AlphaValue"
-    value: int = Field(ge=0.0, le=1.0,default=0.5)
+    value: float = Field(ge=0.0, le=1.0,default=0.5)
     type: Literal["number"] = "number"
     field: Literal["textInput"] = "textInput"
 
