@@ -37,26 +37,39 @@ class OutputImage(Output):
     class Config:
         title = "Image"
 
-class Detections(Detection):
-    keyPoints: Optional[List[KeyPoints]] = None
-    imgUID: str
 
+class InputImageTwo(Input):
+    name: Literal["inputImageTwo"] = "inputImageTwo"
+    value: Union[List[Image], Image]
+    type: str = "object"
 
-class OutputDetections(Output):
-    name: Literal["outputDetections"] = "outputDetections"
-    value: List[Detections]
-    type: Literal["list"] = "list"
-
-    class Config:
-        title = "Output Detections"
-
-class InputDetection(Output):
-    name: Literal["inputDetection"] = "inputDetection"
-    value: List[Detections]
-    type: Literal["list"] = "list"
+    @validator("type", pre=True, always=True)
+    def set_type_based_on_value(cls, value, values):
+        value = values.get('value')
+        if isinstance(value, Image):
+            return "object"
+        elif isinstance(value, list):
+            return "list"
 
     class Config:
-        title = "Input Detections"
+        title = "Second Image"
+
+
+class OutputImageTwo(Output):
+    name: Literal["OutputImageTwo"] = "OutputImageTwo"
+    value: Union[List[Image],Image]
+    type: str = "object"
+
+    @validator("type", pre=True, always=True)
+    def set_type_based_on_value(cls, value, values):
+        value = values.get('value')
+        if isinstance(value, Image):
+            return "object"
+        elif isinstance(value, list):
+            return "list"
+
+    class Config:
+        title = "Output Image Two"
 
 
 class KeepSideFalse(Config):
@@ -221,7 +234,7 @@ class PackageExecutor1Configs(Configs):
 
 class PackageExecutor2Inputs(Inputs):
     inputImage: InputImage
-    inputDetection: InputDetection
+    inputImageTwo: InputImageTwo
 
 class PackageExecutor2Configs(Configs):
     mixingMode: MixingMode
@@ -231,7 +244,7 @@ class PackageExecutor1Outputs(Outputs):
 
 class PackageExecutor2Outputs(Outputs):
     outputImage: OutputImage
-    outputDetections: OutputDetections
+    outputImageTwo: OutputImageTwo
 
 class PackageExecutor1Request(Request):
     inputs: Optional[PackageExecutor1Inputs]
