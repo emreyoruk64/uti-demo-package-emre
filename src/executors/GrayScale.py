@@ -15,7 +15,7 @@ from components.DemoPackageEmre.src.utils.response import build_response
 from components.DemoPackageEmre.src.models.PackageModel import PackageModel
 
 
-class DemoPackageExecutor1(Component):
+class GrayScale(Component):
     def __init__(self, request, bootstrap):
         super().__init__(request, bootstrap)
         self.request.model = PackageModel(**(self.request.data))
