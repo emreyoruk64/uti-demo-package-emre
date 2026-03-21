@@ -273,7 +273,7 @@ class PackageExecutor2Response(Response):
 
 
 class PackageExecutor2(Config):
-    name: Literal["PackageExecutor2"] = "PackageExecutor2"
+    name: Literal["ImageMixer"] = "ImageMixer"
     value: Union[PackageExecutor2Request, PackageExecutor2Response]
     type: Literal["object"] = "object"
     field: Literal["option"] = "option"
@@ -287,7 +287,7 @@ class PackageExecutor2(Config):
         }
 
 class PackageExecutor1(Config):
-    name: Literal["PackageExecutor1"] = "PackageExecutor1"
+    name: Literal["GrayScale"] = "GrayScale"
     value: Union[PackageExecutor1Request, PackageExecutor1Response]
     type: Literal["object"] = "object"
     field: Literal["option"] = "option"
