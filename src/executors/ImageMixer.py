@@ -2,6 +2,7 @@ import os
 import cv2
 import sys
 import numpy as np
+import json
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../../../'))
 
@@ -62,6 +63,8 @@ class ImageMixer(Component):
     def run(self):
         img1 = Image.get_frame(img=self.image, redis_db=self.redis_db)
         img2 = Image.get_frame(img=self.image_two, redis_db=self.redis_db)
+        self.mix = self.mix(img1.value, img2.value)
+        if isinstance(self.mix, dict): self.mix = [self.mix]
         img1.value, img2.value = self.mix(img1.value, img2.value)
         self.image = Image.set_frame(img=img1, package_uID=self.uID, redis_db=self.redis_db)
         self.image_two = Image.set_frame(img=img2, package_uID=self.uID, redis_db=self.redis_db)
