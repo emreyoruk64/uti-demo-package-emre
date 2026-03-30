@@ -25,6 +25,21 @@ class ImageMixer(Component):
         return {}
 
     def mix(self, inputimage, inputimagetwo):
+
+        raw_params = self.request.get_params(self)
+        if isinstance(raw_params, str):
+            try:
+                config = json.loads(raw_params)
+            except json.JSONDecodeError:
+                config = {}
+
+        elif isinstance(raw_params, dict):
+            config = raw_params
+
+        else:
+            config = {}
+
+
         if inputimage.shape != inputimagetwo.shape:
             height, width = inputimage.shape[:2]
             inputimagetwo = cv2.resize(inputimagetwo, (width, height))
@@ -32,6 +47,8 @@ class ImageMixer(Component):
         mode_name = self.mixing_mode.get("name")
 
         if mode_name == "ManuelAlpha":
+            if isinstance(inputimage, str):
+                inputimage = json.loads(inputimage)
             alpha_value = float(self.mixing_mode.get("alpha",0.5))
 
         elif mode_name == "UsePreset":
@@ -63,8 +80,6 @@ class ImageMixer(Component):
     def run(self):
         img1 = Image.get_frame(img=self.image, redis_db=self.redis_db)
         img2 = Image.get_frame(img=self.image_two, redis_db=self.redis_db)
-        self.mix = self.mix(img1.value, img2.value)
-        if isinstance(self.mix, dict): self.mix = [self.mix]
         img1.value, img2.value = self.mix(img1.value, img2.value)
         self.image = Image.set_frame(img=img1, package_uID=self.uID, redis_db=self.redis_db)
         self.image_two = Image.set_frame(img=img2, package_uID=self.uID, redis_db=self.redis_db)
