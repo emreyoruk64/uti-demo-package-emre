@@ -26,7 +26,7 @@ class ImageMixer(Component):
 
     def mix(self, inputimage, inputimagetwo):
 
-        raw_params = self.request.get_params(self)
+        raw_params = self.request.get_param(self)
         if isinstance(raw_params, str):
             try:
                 config = json.loads(raw_params)
