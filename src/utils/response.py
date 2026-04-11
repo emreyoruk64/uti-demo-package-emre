@@ -17,7 +17,7 @@ def build_response_gray(context):
 
 def build_response_mix(context):
     outputImage = OutputImage(value=context.image)
-    outputImageTwo = OutputImageTwo(value=context.image)
+    outputImageTwo = OutputImageTwo(value=context.image_two)
     packageExecutor2Outputs = PackageExecutor2Outputs(outputImage=outputImage, outputImageTwo=outputImageTwo)
     packageExecutor2Response = PackageExecutor2Response(outputs=packageExecutor2Outputs)
     packageExecutor2 = PackageExecutor2(value=packageExecutor2Response)
