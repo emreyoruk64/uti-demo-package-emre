@@ -41,8 +41,6 @@ class ImageMixer(Component):
             alpha_value = float(self.alpha_value or 0.5)
 
         elif mode_name == "UsePreset":
-            strength_level = self.mixing_mode.get("strength_level")
-
             if self.strength_level is False:
                 alpha_value = 0.8
 
