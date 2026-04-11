@@ -19,6 +19,8 @@ class ImageMixer(Component):
         self.image = self.request.get_param("inputImage")
         self.image_two = self.request.get_param("inputImageTwo")
         self.mixing_mode = self.request.get_param("MixingMode")
+        self.strength_level = self.request.get_param("StrengthLevel")
+        self.alpha_value = self.request.get_param("AlphaValue")
 
     @staticmethod
     def bootstrap(config: dict) -> dict:
@@ -26,38 +28,25 @@ class ImageMixer(Component):
 
     def mix(self, inputimage, inputimagetwo):
 
-        raw_params = self.request.get_param(self)
-        if isinstance(raw_params, str):
-            try:
-                config = json.loads(raw_params)
-            except json.JSONDecodeError:
-                config = {}
-
-        elif isinstance(raw_params, dict):
-            config = raw_params
-
-        else:
-            config = {}
-
 
         if inputimage.shape != inputimagetwo.shape:
             height, width = inputimage.shape[:2]
             inputimagetwo = cv2.resize(inputimagetwo, (width, height))
 
-        mode_name = self.mixing_mode.get("name")
+        mode_name = self.mixing_mode
 
         if mode_name == "ManuelAlpha":
             if isinstance(inputimage, str):
                 inputimage = json.loads(inputimage)
-            alpha_value = float(self.mixing_mode.get("alpha",0.5))
+            alpha_value = float(self.alpha_value or 0.5)
 
         elif mode_name == "UsePreset":
             strength_level = self.mixing_mode.get("strength_level")
 
-            if strength_level == "Low":
+            if self.strength_level is False:
                 alpha_value = 0.8
 
-            elif strength_level == "High":
+            elif self.strength_level is True:
                 alpha_value = 0.5
 
             else:
