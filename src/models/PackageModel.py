@@ -101,6 +101,7 @@ class Example1(Config):
     class Config:
         title = "Example1"
 
+
 class ConfigParam1(Config):
     name: Literal["ConfigParam1"] = "ConfigParam1"
     example: Example1
@@ -121,6 +122,7 @@ class ConfigParam2(Config):
     class Config:
         title = "Param2"
 
+
 class ConfigParams(Config):
      name: Literal["ConfigParams"] = "ConfigParams"
      value:Union[ConfigParam1,ConfigParam2]
@@ -130,8 +132,10 @@ class ConfigParams(Config):
      class Config:
          title = "Params"
 
+
 class ExecutorConfigs(Configs):
      configParams: ConfigParams
+
 
 class KeepSideBBox(Config):
     """
@@ -145,6 +149,7 @@ class KeepSideBBox(Config):
     class Config:
         title = "Keep Sides"
 
+
 class StrengthLevelLow(Config):
     name: Literal["False"] = "False"
     value: Literal[False] = False
@@ -153,6 +158,7 @@ class StrengthLevelLow(Config):
 
     class Config:
         title = "Low"
+
 
 class StrengthLevelHigh(Config):
     name: Literal["True"] = "True"
@@ -163,7 +169,11 @@ class StrengthLevelHigh(Config):
     class Config:
         title = "High"
 
+
 class StrengthLevel(Config):
+    """
+        Select a preset blend strength level.
+    """
     name: Literal["StrengthLevel"] = "StrengthLevel"
     value: Union[StrengthLevelLow, StrengthLevelHigh]
     type: Literal["object"] = "object"
@@ -186,7 +196,11 @@ class Degree(Config):
     class Config:
         title = "Angle"
 
+
 class AlphaValue(Config):
+    """
+        Set the manual alpha blend ratio between 0.0 and 1.0.
+    """
     name: Literal["AlphaValue"] = "AlphaValue"
     value: float = Field(ge=0.0, le=1.0,default=0.5)
     type: Literal["number"] = "number"
@@ -194,6 +208,7 @@ class AlphaValue(Config):
 
     class Config:
         title = "Alpha Value"
+
 
 class ManuelAlpha(Config):
     name: Literal["ManuelAlpha"] = "ManuelAlpha"
@@ -205,6 +220,7 @@ class ManuelAlpha(Config):
     class config:
         title = "Manuel Alpha"
 
+
 class UsePreset(Config):
     name: Literal["UsePreset"] = "UsePreset"
     strengthLevel: StrengthLevel
@@ -215,7 +231,11 @@ class UsePreset(Config):
     class config:
         title = "Use Preset"
 
+
 class MixingMode(Config):
+    """
+        Choose whether blending uses a manual alpha value or a preset strength level.
+    """
     name: Literal["MixingMode"] = "MixingMode"
     value: Union[ManuelAlpha, UsePreset]
     type: Literal["object"] = "object"
@@ -228,23 +248,29 @@ class MixingMode(Config):
 class PackageExecutor1Inputs(Inputs):
     inputImage: InputImage
 
+
 class PackageExecutor1Configs(Configs):
     degree: Degree
     drawBBox: KeepSideBBox
+
 
 class PackageExecutor2Inputs(Inputs):
     inputImage: InputImage
     inputImageTwo: InputImageTwo
 
+
 class PackageExecutor2Configs(Configs):
     mixingMode: MixingMode
+
 
 class PackageExecutor1Outputs(Outputs):
     outputImage: OutputImage
 
+
 class PackageExecutor2Outputs(Outputs):
     outputImage: OutputImage
     outputImageTwo: OutputImageTwo
+
 
 class PackageExecutor1Request(Request):
     inputs: Optional[PackageExecutor1Inputs]
@@ -265,8 +291,10 @@ class PackageExecutor2Request(Request):
             "target": "configs"
         }
 
+
 class PackageExecutor1Response(Response):
     outputs: PackageExecutor1Outputs
+
 
 class PackageExecutor2Response(Response):
     outputs: PackageExecutor2Outputs
@@ -286,6 +314,7 @@ class PackageExecutor2(Config):
             }
         }
 
+
 class PackageExecutor1(Config):
     name: Literal["GrayScale"] = "GrayScale"
     value: Union[PackageExecutor1Request, PackageExecutor1Response]
@@ -299,7 +328,6 @@ class PackageExecutor1(Config):
                 "value": 0
             }
         }
-
 
 
 class ConfigExecutor(Config):
